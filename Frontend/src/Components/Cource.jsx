@@ -1,10 +1,28 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import list from "../../public/list.json"
+ 
+import axios from 'axios'
 import Cards from './Cards'
 import { IoSearchSharp } from "react-icons/io5";
 function Cource() {
-  const fillData=list.filter((data)=>data.category!=="free")
+
+const[book,setBook]=useState([])
+useEffect(()=>{
+     const getBook=async()=>{
+       try{
+       const res= await axios.get("http://localhost:8000/book")
+        console.log(res.data)
+        setBook(res.data)
+
+       }catch(error){
+console.log(error)
+       }
+
+     }
+     getBook();
+},[])
+
+  const bookdata=book.filter((data)=>data.category!=="free")
   const [searchTerm,setSearchTerm]=useState("");
   return (
     <>
@@ -35,7 +53,7 @@ function Cource() {
      </div>
      <div className='mt-12 dark:text-black grid grid-cols-1 md:grid-cols-3  '>
       {
-         fillData
+        bookdata
          .filter((val)=>{//search item
           if(searchTerm==""){
               return val;
